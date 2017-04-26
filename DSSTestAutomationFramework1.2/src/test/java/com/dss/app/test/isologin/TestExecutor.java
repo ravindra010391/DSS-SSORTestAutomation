@@ -1,9 +1,15 @@
 package com.dss.app.test.isologin;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Stack;
 
+import org.apache.http.util.Asserts;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -11,24 +17,61 @@ import org.openqa.selenium.html5.LocalStorage;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.Assert;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 
 import com.dss.app.apputilities.AppUtility;
+import com.dss.app.apputilities.GlobalValues;
+import com.dss.app.failedrerun.Retry;
 import com.dss.app.reporter.ExtentTestManager;
 import com.dss.app.test.base.BaseTest;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import com.relevantcodes.extentreports.LogStatus;
 
 
-public class TestExecutor  extends BaseTest {
+public class TestExecutor extends BaseTest {
+	static int i = 1;
 	
-	@Test(enabled = false, groups = "Regression")
+	@Test(groups = {"Regression"}, enabled = false)
+	public void ssotosso_yahootofacebook(){
+		
+		
+		
+		System.out.println("map gamail :"+testCaseLevelSSOCredentials.get("Gmail"));
+		System.out.println("map yahoo :"+testCaseLevelSSOCredentials.get("Yahoo"));
+		System.out.println("map aol :"+testCaseLevelSSOCredentials.get("Aol"));
+		System.out.println("map twitter :"+testCaseLevelSSOCredentials.get("Twitter"));
+		System.out.println("map facebook :"+testCaseLevelSSOCredentials.get("Facebook"));
+	
+		
+		System.out.println("testcase 1 Failed");
+		Assert.assertTrue(false);
+	}
+	
+	@Test(groups = {"Regression"}, enabled = false)
+	public void testcase2(){
+		System.out.println("testcase 2 Failed");
+		System.out.println("i===>"+i);
+		if(i==1){i++;
+		Assert.assertTrue(false);}
+		else
+			Assert.assertTrue(true);
+		
+		
+		i++;
+		
+	}
+		
+	@Test(groups = {"Regression"}, enabled = false)
 	public void isISOLoginSuccessful() throws InterruptedException, IOException {
 		System.out.println("deleting test data ");
 		//AppUtility.deleteTestDataFromP2P("gurimay12@yahoo.in");
 		System.out.println("deleted");
 		
-		String username = "test1test1@gmail.com";
-		String password = "tribune01";
+		String username = "test1test2@gmail.com";
+		String password = "tribune1";
 		boolean isSuccess = false;
 		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Click on Login Button on TopNav");
@@ -41,8 +84,17 @@ public class TestExecutor  extends BaseTest {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Verify User on Profile Page");
 		isSuccess= profilepage.isExpectedUserLogged(username);
 		
-		Assert.assertTrue(isSuccess);
-		
+		//Profile Page Checks 
+		String passwordUpdateMsg = profilepage.editPassword("tribune1", "tribune1");		
+		String nameUpdateMsg= profilepage.editName("FirstName", "Lastname");
+		String usernameUpdateMsg = profilepage.editUsername("NewUsername1");
+				
+		SoftAssert softAssert = new SoftAssert();
+		softAssert.assertEquals(isSuccess, true);
+		softAssert.assertEquals(passwordUpdateMsg, GlobalValues.PASSWORD_SUCCESSFULLY_UPADATED_MSG);
+	    softAssert.assertEquals(nameUpdateMsg, GlobalValues.NAME_SUCCESSFULLY_UPADATED_MSG);
+		softAssert.assertEquals(usernameUpdateMsg, GlobalValues.USERNAME_SUCCESSFULLY_UPADATED_MSG);
+		softAssert.assertAll();
 	}
 
 
@@ -99,7 +151,7 @@ public class TestExecutor  extends BaseTest {
 	}
 	
 	
-	@Test( groups = "Regression", enabled = true)
+	@Test( groups = "Regression", enabled = false)
 	public void SSO_Login_With_Gmail_First_Time_Login() throws InterruptedException, IOException{
 		String username = testCaseLevelSSOCredentials.get("Gmail").get(0);
 		String password = testCaseLevelSSOCredentials.get("Gmail").get(1);
@@ -207,7 +259,7 @@ public class TestExecutor  extends BaseTest {
 	@Test(enabled = false) 
 	public void SSO_Login_With_Twitter_First_Time_Login() throws InterruptedException, IOException{
 		String username = "tribunedss1@yahoo.com";
-		String password = "tribune1";
+		String password = "Tribune01";
 		String zipcode = "60601";
 		boolean isSuccess = false;
 		
@@ -313,9 +365,26 @@ public class TestExecutor  extends BaseTest {
 			ExtentTestManager.getTest().log(LogStatus.INFO, "Second Time SSO Login Using Yahoo is Successful");
 		
 		Assert.assertEquals(isSuccess, true);	
-		
 
+	}
+	
+	
+	
+	
+	@Test(groups = {"Regression"}, enabled = true)
+	public void Linking_ISOtoSSO_ISOtoYahoo() throws InterruptedException, IOException{
+		
+		homepage.clickOnLoginTopNav();
+		homepage.clickOnRegisterButtonOnLoginPanel();
+		homepage.doRegistration("tribunedss21@yahoo.com", "tribune1","60601");
+		homepage.doLogout();
+		homepage.clickOnLoginTopNav();
+		gigyapage = homepage.clickOnYahooIcon();
+		homepage = gigyapage.doYahooLogin("tribunedss21@yahoo.com","tribune1");
+		homepage.doLogin("tribunedss21@yahoo.com ", "tribune1");
+		profilepage = homepage.gotoProfilePage();
 		
 	}
+	
 	
 }

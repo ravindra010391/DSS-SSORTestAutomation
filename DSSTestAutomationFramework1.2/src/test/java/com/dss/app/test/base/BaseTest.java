@@ -27,7 +27,8 @@ import com.dss.app.pageobject.GigyaPageObject;
 import com.dss.app.pageobject.HomePageObject;
 import com.dss.app.pageobject.ProfilePageObject;
 import com.dss.app.reporter.ExtentTestManager;
-import com.dss.app.reporter.Extentmanager;
+import com.dss.app.reporter.ExtentManager;
+import com.relevantcodes.extentreports.ExtentReports;
 import com.relevantcodes.extentreports.ExtentTest;
 import com.relevantcodes.extentreports.LogStatus;
 
@@ -45,22 +46,25 @@ public class BaseTest{
 	protected String jobID;
 	protected String url;
 	protected Map<String, ArrayList<String>> testCaseLevelSSOCredentials;
-	public static String currentSuiteName;
-	
+	public static String currentSuiteName;	
 	
 
 	@BeforeSuite(alwaysRun = true)
 	public void suiteSetUp(ITestContext context) throws IOException {
 		currentSuiteName = context.getCurrentXmlTest().getSuite().getName();
-		Extentmanager.getReporter(currentSuiteName);
+		ExtentManager.getReporter(currentSuiteName);
 		AppUtility.initAllSSOStacks();
+		System.out.println("before suite");
 
 	}
 
 	@AfterSuite(alwaysRun = true)
 	public void suiteTearDown() throws IOException {
+		System.out.println("After suite");
 		//CoreUtility.cleanAllTempLogFile();
-		Extentmanager.getReporter().close();
+		ExtentManager.closeExtent();
+		
+		
 		
 	}
 	
@@ -109,7 +113,7 @@ public class BaseTest{
 		Log.info("Browser: "+browser);
 		Log.info("Platform: "+platform);
 		Log.info("URL: "+url);
-		testCaseLevelSSOCredentials = AppUtility.getTestCaseLevelSSOTestUsers();
+		testCaseLevelSSOCredentials = AppUtility.getTestCaseLevelSSOTestUsers(method.getName());
 		Log.info("Test Data / SSO Users for Test Case is Created ");		
 		
 	}
@@ -126,7 +130,7 @@ public class BaseTest{
             
         } else if (result.getStatus() == ITestResult.SKIP) {
         	testStatus = "Skipped";
-            ExtentTestManager.getTest().log(LogStatus.SKIP, "Test skipped " + result.getThrowable());
+            ExtentTestManager.getTest().log(LogStatus.SKIP, "Test skipped ");
             Log.error(result.getThrowable());
             
         } else  if (result.getStatus() == ITestResult.SUCCESS){
@@ -137,9 +141,11 @@ public class BaseTest{
 		String click_url = "<a target='_blank'"+ "href='https://saucelabs.com/beta/tests/"+ jobID +"/metadata#9'>Screenshot and Screencast of the Test</a>";
 		ExtentTestManager.getTest().log(LogStatus.INFO, click_url);
         
-        Extentmanager.getReporter().endTest(ExtentTestManager.getTest());        
-        Extentmanager.getReporter().flush();
+        ExtentManager.getReporter().endTest(ExtentTestManager.getTest());  
+        System.out.println("before flush");
+        ExtentManager.getReporter().flush();
         Log.endTestCase(testStatus);    
+        System.out.println("After method fibnished");
 		driver.quit();
 		AppUtility.destoryTestCaseLevelSSOTestUsers(testCaseLevelSSOCredentials);	
 	}

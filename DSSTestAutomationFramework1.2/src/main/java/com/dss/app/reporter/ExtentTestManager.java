@@ -9,7 +9,8 @@ import com.relevantcodes.extentreports.ExtentTest;
 public class ExtentTestManager {
 
 	static Map extentTestMap = new HashMap();
-    static ExtentReports extent = Extentmanager.getReporter();
+    static ExtentReports extent ;
+    
 
     public static synchronized ExtentTest getTest() {
         return (ExtentTest) extentTestMap.get((int) (long) (Thread.currentThread().getId()));

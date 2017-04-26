@@ -23,8 +23,6 @@ import com.dss.p2p.pageobject.P2PRegistrationPageObject;
 
 public class AppUtility {
 
-	public static Stack stack_Facebook;
-	public static Stack stack_Twitter;
 	public static Stack stack_Aol;
 	public static Stack stack_Yahoo;
 	public static Stack stack_Gmail;
@@ -95,13 +93,15 @@ public class AppUtility {
 	}
 
 	public static void deleteTestDataFromP2P(List<String> allEmailId)
-			throws InterruptedException {
+	 {
 
+		boolean retry  = true;
 		P2PLoginPageObject p2pLogIn;
 		P2PHomePageObject p2pHome;
 		P2PRegistrationPageObject p2pRegistration;
 		PhantomJSDriver localdriver;
 
+		try{
 		System.setProperty("phantomjs.binary.path",
 				GlobalValues.PHANTOMJS_DRIVER_PATH);
 		localdriver = new PhantomJSDriver();
@@ -115,20 +115,27 @@ public class AppUtility {
 			p2pRegistration.deleteEntry(email);
 		}
 		localdriver.close();
+		
+		}catch(Exception e){
+			if(retry){
+			deleteTestDataFromP2P(allEmailId); // Will call destroy method second time if there are failures during first time
+			retry =  false;
+			}
+		}
+		
 
 	}
 
 	public static void initAllSSOStacks() throws IOException {
 
-		stack_Facebook = SSOStacks.loadSSOStack("Facebook");
-		stack_Twitter = SSOStacks.loadSSOStack("Twitter");
 		stack_Aol = SSOStacks.loadSSOStack("AOL");
 		stack_Yahoo = SSOStacks.loadSSOStack("Yahoo");
 		stack_Gmail = SSOStacks.loadSSOStack("Gmail");
 
 	}
 
-	public static Map<String, ArrayList<String>> getTestCaseLevelSSOTestUsers() {
+	public static Map<String, ArrayList<String>> getTestCaseLevelSSOTestUsers(
+			String testcaseName) {
 
 		Map<String, ArrayList<String>> testCaseLevelSSOCredentials = new HashMap<String, ArrayList<String>>();
 
@@ -138,37 +145,142 @@ public class AppUtility {
 				SSOStacks.getIDFromStack(stack_Yahoo));
 		testCaseLevelSSOCredentials.put("Aol",
 				SSOStacks.getIDFromStack(stack_Aol));
-		testCaseLevelSSOCredentials.put("Twitter",
-				SSOStacks.getIDFromStack(stack_Twitter));
-		testCaseLevelSSOCredentials.put("Facebook",
-				SSOStacks.getIDFromStack(stack_Facebook));
-		
+		/*--------------------------------------------------------------*/
+		if (testcaseName.toLowerCase().contains("ssotosso")) {
+
+			if (testcaseName.toLowerCase().contains("yahoo")) {
+
+				if (testcaseName.toLowerCase().contains("facebook")) {
+					testCaseLevelSSOCredentials.put("Facebook",
+							testCaseLevelSSOCredentials.get("Yahoo"));
+					testCaseLevelSSOCredentials.put("Twitter",
+							testCaseLevelSSOCredentials.get("Gmail"));
+					System.out.println("yahoo and FB");
+				} else {
+					testCaseLevelSSOCredentials.put("Facebook",
+							testCaseLevelSSOCredentials.get("Aol"));
+					testCaseLevelSSOCredentials.put("Twitter",
+							testCaseLevelSSOCredentials.get("Yahoo"));
+					System.out.println("yahoo and twitter");
+				}
+			}
+
+			else if (testcaseName.toLowerCase().contains("gmail")) {
+
+				if (testcaseName.toLowerCase().contains("facebook")) {
+					testCaseLevelSSOCredentials.put("Facebook",
+							testCaseLevelSSOCredentials.get("Gmail"));
+					testCaseLevelSSOCredentials.put("Twitter",
+							testCaseLevelSSOCredentials.get("Yahoo"));
+					System.out.println("gmail and FB");
+				} else {
+					testCaseLevelSSOCredentials.put("Facebook",
+							testCaseLevelSSOCredentials.get("Yahoo"));
+					testCaseLevelSSOCredentials.put("Twitter",
+							testCaseLevelSSOCredentials.get("Gmail"));
+					System.out.println("gmail and twitter");
+				}
+			}
+
+			else {
+				testCaseLevelSSOCredentials.put("Facebook",
+						testCaseLevelSSOCredentials.get("Aol"));
+				testCaseLevelSSOCredentials.put("Twitter",
+						testCaseLevelSSOCredentials.get("Gmail"));
+				if (testcaseName.toLowerCase().contains("Facebook")) {
+					System.out.println("AOL and FB");
+				} else {
+					testCaseLevelSSOCredentials.put("Facebook",
+							testCaseLevelSSOCredentials.get("Yahoo"));
+					testCaseLevelSSOCredentials.put("Twitter",
+							testCaseLevelSSOCredentials.get("Aol"));
+					System.out.println("AOL and FB");
+				}
+			}
+
+		} else {
+			Random randomNumber = new Random();
+			int swapCounter = randomNumber.nextInt(5);
+			switch (swapCounter) {
+
+			case 0:
+				testCaseLevelSSOCredentials.put("Facebook",
+						testCaseLevelSSOCredentials.get("Yahoo"));
+				testCaseLevelSSOCredentials.put("Twitter",
+						testCaseLevelSSOCredentials.get("Aol"));
+				break;
+			case 1:
+				testCaseLevelSSOCredentials.put("Facebook",
+						testCaseLevelSSOCredentials.get("Yahoo"));
+				testCaseLevelSSOCredentials.put("Twitter",
+						testCaseLevelSSOCredentials.get("Gmail"));
+				break;
+			case 2:
+				testCaseLevelSSOCredentials.put("Facebook",
+						testCaseLevelSSOCredentials.get("Gmail"));
+				testCaseLevelSSOCredentials.put("Twitter",
+						testCaseLevelSSOCredentials.get("Aol"));
+				break;
+			case 3:
+				testCaseLevelSSOCredentials.put("Facebook",
+						testCaseLevelSSOCredentials.get("Gmail"));
+				testCaseLevelSSOCredentials.put("Twitter",
+						testCaseLevelSSOCredentials.get("Yahoo"));
+				break;
+			case 4:
+				testCaseLevelSSOCredentials.put("Facebook",
+						testCaseLevelSSOCredentials.get("Aol"));
+				testCaseLevelSSOCredentials.put("Twitter",
+						testCaseLevelSSOCredentials.get("Yahoo"));
+				break;
+			case 5:
+				testCaseLevelSSOCredentials.put("Facebook",
+						testCaseLevelSSOCredentials.get("Aol"));
+				testCaseLevelSSOCredentials.put("Twitter",
+						testCaseLevelSSOCredentials.get("Gmail"));
+				break;
+
+			default:
+				testCaseLevelSSOCredentials.put("Facebook",
+						testCaseLevelSSOCredentials.get("Yahoo"));
+				testCaseLevelSSOCredentials.put("Twitter",
+						testCaseLevelSSOCredentials.get("Aol"));
+
+			}
+
+		}
+
+
 		if (testCaseLevelSSOCredentials != null)
 			System.out.println("child stack created");
 		else
 			System.out.println("child is null");
-		
 		return testCaseLevelSSOCredentials;
 
 	}
 
 	public static void destoryTestCaseLevelSSOTestUsers(
 			Map<String, ArrayList<String>> testCaseLevelSSOCredentials)
-			throws InterruptedException {
+		  {
+
+		// deleting twitter and facebook as it is programmatically appended
+		// depending upon the TC and we don't have a separate stack for it
+		testCaseLevelSSOCredentials.remove("Facebook");
+		testCaseLevelSSOCredentials.remove("Twitter");
 
 		List<String> allSSOEmailids = new ArrayList<String>();
+		System.out.println(testCaseLevelSSOCredentials.size());
 		for (String key : testCaseLevelSSOCredentials.keySet()) {
 			allSSOEmailids.add(testCaseLevelSSOCredentials.get(key).get(0));
 		}
 
 		System.out.println("calling delete p2p from distroy");
+
 		deleteTestDataFromP2P(allSSOEmailids);
-		stack_Facebook.push(testCaseLevelSSOCredentials.get("Facebook"));
-		stack_Twitter.push(testCaseLevelSSOCredentials.get("Twitter"));
+
 		stack_Aol.push(testCaseLevelSSOCredentials.get("Aol"));
 		stack_Yahoo.push(testCaseLevelSSOCredentials.get("Yahoo"));
 		stack_Gmail.push(testCaseLevelSSOCredentials.get("Gmail"));
 		testCaseLevelSSOCredentials = null;
 	}
-
 }

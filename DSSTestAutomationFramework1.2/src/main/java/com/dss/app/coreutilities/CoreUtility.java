@@ -50,7 +50,7 @@ public class CoreUtility {
 
 	// This method will check if element is present or not
 	public static boolean isPresent(WebElement element) {
-
+		
 		if (element.isDisplayed()) {
 			return true;
 		} else {
@@ -70,7 +70,7 @@ public class CoreUtility {
 					.visibilityOf(element));
 			
 		} catch (Exception e) {
-			//log.debug("Web element not found ");
+			System.out.println("Web element not found ");
 		}
 		return visibleElement;
 	}

@@ -25,13 +25,30 @@ public class HomePageObject {
 		PageFactory.initElements(driver, this);
 	}
 	
-	
+	// Top Nav locators
 	@FindBy(xpath = "html/body/header/div[1]/div[1]/a[2]")
 	public  WebElement btn_LoginTopNav;
 
 	@FindBy(xpath = "html/body/header/div[1]/div[1]/a[3]")
 	private  WebElement btn_Subscribe;
+	
+	@FindBy(xpath = "//*[@id='reg-overlay']/div/div[2]/form/div[3]/a")
+	private WebElement link_Register;
+	
+	//Registration Panel Locators
+	@FindBy(xpath = "//*[@id='reg-overlay']/div/div[2]/form/div[1]/fieldset[1]/input")
+	private  WebElement textBox_EmailId_RegistrationPanel;
 
+	@FindBy(xpath = "//*[@id='reg-overlay']/div/div[2]/form/div[1]/fieldset[2]/input")
+	private  WebElement textBox_Password_RegistrationPanel;
+	
+	@FindBy(xpath = "//*[@id='reg-overlay']/div/div[2]/form/div[1]/fieldset[3]/input")
+	private WebElement textbox_Zipcode_RegistrationPanel;
+	
+	@FindBy(xpath = "//*[@id='reg-overlay']/div/div[2]/form/div[1]/button")
+	private WebElement btn_RegisterForFree;
+	
+	// Login Panel locators					
 	@FindBy(xpath = "//*[@id='reg-overlay']/div/div[2]/form/div[1]/fieldset[1]/input")
 	private  WebElement textBox_EmailId;
 
@@ -92,6 +109,8 @@ public class HomePageObject {
 	@FindBy(xpath = "//*[@id='reg-overlay']/div[2]/div[2]/div[2]/div")
 	private WebElement btn_Continue_ThankYouPanel;	
 
+	
+	//-----------Public methods-------------------
 
 	public HomePageObject clickOnLoginTopNav() {
 		CoreUtility.highlightElement(btn_LoginTopNav, driver);
@@ -100,13 +119,35 @@ public class HomePageObject {
 		return this;
 	}
 
-	public void doLogin(String userName, String userPassword) {
-		enterEmailId(userName);
-		enterPassword(userPassword);
-		clicklogin();
-
+	public HomePageObject clickOnRegisterButtonOnLoginPanel() {
+		CoreUtility.highlightElement(btn_LoginTopNav, driver);
+		CoreUtility.clickOnElement(btn_LoginTopNav);
+		Log.info("Clicked on Login Button of Top NAV");
+		return this;
+	}
+	public HomePageObject doLogin(String userName, String userPassword) {
+		enterEmailIdonLoginPanel(userName);
+		enterPasswordOnLoginPanel(userPassword);
+		clickloginOnLoginPanel();
+		clickOnContinueButtonOnThankYouPanel();
+		return this;
 	}
 
+	public void doRegistration(String username, String password, String zipcode){
+		clickOnLoginTopNav();
+		clickOnRegisterButtonOnLoginPanel();
+		enterEmailIdonRegistrationPanel(username);
+		enterPasswordOnRegistrationPanel(password);
+		enterZipcodeOnRegistrationPanel(zipcode);
+		clickOnRegisterButtonOnLoginPanel();
+		
+	}
+	
+	public HomePageObject doLogout(){
+		clickOnUserIcon().clickOnLogoutLink();
+		return this;
+	}
+	
 	public ProfilePageObject gotoProfilePage() throws IOException {
 
 		profilepage = clickOnUserIcon().clickOnAccountLink();
@@ -185,7 +226,7 @@ public class HomePageObject {
 
 
 	// ****************PRIVATE METHODS*******************************
-	private HomePageObject enterEmailId(String emailId) {
+	private HomePageObject enterEmailIdonLoginPanel(String emailId) {
 		CoreUtility.highlightElement(textBox_EmailId, driver);
 		CoreUtility.waitForElementPresent(textBox_EmailId,
 				driver);
@@ -194,7 +235,7 @@ public class HomePageObject {
 		return this;
 	}
 
-	private HomePageObject enterPassword(String password) {
+	private HomePageObject enterPasswordOnLoginPanel(String password) {
 		CoreUtility.waitForElementPresent(textBox_Password,
 				driver);
 		CoreUtility.highlightElement(textBox_Password, driver);
@@ -203,11 +244,47 @@ public class HomePageObject {
 		return this;
 	}
 
-	private HomePageObject clicklogin() {
+	private HomePageObject clickloginOnLoginPanel() {
 		CoreUtility.waitForElementPresent(btn_Login, driver);
 		CoreUtility.highlightElement(btn_Login, driver);
 		CoreUtility.clickOnElement(btn_Login);
 		Log.info("Clicked on Login button at the login panel");
+		return this;
+	}
+	
+	
+	private HomePageObject enterEmailIdonRegistrationPanel(String emailId) {
+		CoreUtility.highlightElement(textBox_EmailId_RegistrationPanel, driver);
+		CoreUtility.waitForElementPresent(textBox_EmailId_RegistrationPanel,
+				driver);
+		CoreUtility.enterData(emailId, textBox_EmailId_RegistrationPanel);
+		Log.info("Entered Email id: "+emailId);
+		return this;
+	}
+
+	private HomePageObject enterPasswordOnRegistrationPanel(String password) {
+		CoreUtility.waitForElementPresent(textBox_Password_RegistrationPanel,
+				driver);
+		CoreUtility.highlightElement(textBox_Password_RegistrationPanel, driver);
+		CoreUtility.enterData(password, textBox_Password_RegistrationPanel);
+		Log.info("Entered Password");
+		return this;
+	}
+
+	private HomePageObject enterZipcodeOnRegistrationPanel(String zipcode) {
+		CoreUtility.waitForElementPresent(textbox_Zipcode_RegistrationPanel,
+				driver);
+		CoreUtility.highlightElement(textbox_Zipcode_RegistrationPanel, driver);
+		CoreUtility.enterData(zipcode, textbox_Zipcode_RegistrationPanel);
+		Log.info("Entered Zipcode");
+		return this;
+	}
+
+	private HomePageObject clickloginOnRegisterButtonOnRegistrationPanel() {
+		CoreUtility.waitForElementPresent(btn_RegisterForFree, driver);
+		CoreUtility.highlightElement(btn_RegisterForFree, driver);
+		CoreUtility.clickOnElement(btn_RegisterForFree);
+		Log.info("Clicked on 'Register For Free' button at the login panel");
 		return this;
 	}
 
@@ -223,6 +300,14 @@ public class HomePageObject {
 		Log.info("Clicked on User Account menu");
 		return this;
 	}
+	
+	private HomePageObject clickOnLogoutLink() {
+		CoreUtility.highlightElement(link_SignOut, driver);
+		CoreUtility.clickOnElement(link_SignOut);
+		Log.info("Clicked on sign Out link");
+		return this;
+	}
+
 
 	private ProfilePageObject clickOnAccountLink() throws IOException {
 		CoreUtility.waitForElementPresent(link_ProfilePage,

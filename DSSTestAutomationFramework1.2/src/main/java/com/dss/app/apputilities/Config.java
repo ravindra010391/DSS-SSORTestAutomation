@@ -9,7 +9,10 @@ import java.util.Arrays;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -112,6 +115,13 @@ public class Config {
 			caps = DesiredCapabilities.firefox();
 			caps.setCapability("locationContextEnabled",false);
 			caps.setCapability("version", "latest");
+		
+			FirefoxProfile profile = new FirefoxProfile();
+			profile.setAcceptUntrustedCertificates(true);
+			// Below code is to handle the Unsecure Password Exception on FF
+			caps.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+			caps.setCapability(FirefoxDriver.PROFILE, profile);
+			
 
 			if (platform.contains("windows"))
 				caps.setCapability("platform", platform);
