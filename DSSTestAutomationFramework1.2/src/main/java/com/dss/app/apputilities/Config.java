@@ -114,15 +114,16 @@ public class Config {
 			System.out.println("Firefox init");
 			caps = DesiredCapabilities.firefox();
 			caps.setCapability("locationContextEnabled",false);
-			caps.setCapability("version", "latest");
+			caps.setCapability("version", "52");
 		
 			FirefoxProfile profile = new FirefoxProfile();
 			profile.setAcceptUntrustedCertificates(true);
+			caps.setCapability(CapabilityType.SUPPORTS_LOCATION_CONTEXT, false);
+			
 			// Below code is to handle the Unsecure Password Exception on FF
 			caps.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 			caps.setCapability(FirefoxDriver.PROFILE, profile);
 			
-
 			if (platform.contains("windows"))
 				caps.setCapability("platform", platform);
 			else if (platform.contains("OS")) 

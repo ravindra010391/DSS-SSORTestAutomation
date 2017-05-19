@@ -45,7 +45,7 @@ public class HomePageObject {
 	@FindBy(xpath = "//*[@id='reg-overlay']/div/div[2]/form/div[1]/fieldset[3]/input")
 	private WebElement textbox_Zipcode_RegistrationPanel;
 	
-	@FindBy(xpath = "//*[@id='reg-overlay']/div/div[2]/form/div[1]/button")
+	@FindBy(xpath = ".//*[@id='reg-overlay']/div/div[2]/form/div[1]/button")
 	private WebElement btn_RegisterForFree;
 	
 	// Login Panel locators					
@@ -119,27 +119,24 @@ public class HomePageObject {
 		return this;
 	}
 
-	public HomePageObject clickOnRegisterButtonOnLoginPanel() {
-		CoreUtility.highlightElement(btn_LoginTopNav, driver);
-		CoreUtility.clickOnElement(btn_LoginTopNav);
-		Log.info("Clicked on Login Button of Top NAV");
+	public HomePageObject clickOnRegisterLinkOnLoginPanel() {
+		CoreUtility.highlightElement(link_Register, driver);
+		CoreUtility.clickOnElement(link_Register);
+		Log.info("Clicked on Register link on Login Panel");
 		return this;
 	}
 	public HomePageObject doLogin(String userName, String userPassword) {
 		enterEmailIdonLoginPanel(userName);
 		enterPasswordOnLoginPanel(userPassword);
 		clickloginOnLoginPanel();
-		clickOnContinueButtonOnThankYouPanel();
 		return this;
 	}
 
 	public void doRegistration(String username, String password, String zipcode){
-		clickOnLoginTopNav();
-		clickOnRegisterButtonOnLoginPanel();
 		enterEmailIdonRegistrationPanel(username);
 		enterPasswordOnRegistrationPanel(password);
 		enterZipcodeOnRegistrationPanel(zipcode);
-		clickOnRegisterButtonOnLoginPanel();
+		clickOnRegisterButtonOnRegistrationPanel();
 		
 	}
 	
@@ -148,7 +145,7 @@ public class HomePageObject {
 		return this;
 	}
 	
-	public ProfilePageObject gotoProfilePage() throws IOException {
+	public ProfilePageObject gotoProfilePage() {
 
 		profilepage = clickOnUserIcon().clickOnAccountLink();
 		Log.info("Redirecting to Profile page");
@@ -280,7 +277,7 @@ public class HomePageObject {
 		return this;
 	}
 
-	private HomePageObject clickloginOnRegisterButtonOnRegistrationPanel() {
+	private HomePageObject clickOnRegisterButtonOnRegistrationPanel() {
 		CoreUtility.waitForElementPresent(btn_RegisterForFree, driver);
 		CoreUtility.highlightElement(btn_RegisterForFree, driver);
 		CoreUtility.clickOnElement(btn_RegisterForFree);
@@ -309,7 +306,7 @@ public class HomePageObject {
 	}
 
 
-	private ProfilePageObject clickOnAccountLink() throws IOException {
+	private ProfilePageObject clickOnAccountLink(){
 		CoreUtility.waitForElementPresent(link_ProfilePage,
 				driver);
 		CoreUtility.highlightElement(link_ProfilePage, driver);

@@ -53,6 +53,13 @@ public class AppUtility {
 		return emailId;
 	}
 
+	public static String passwordGenerator(int passcode){
+		if(passcode == 1)
+			return GlobalValues.PASSWORD1;
+		else
+			return GlobalValues.PASSWORD2;
+		}
+	
 	public static String getCurrentDate() {
 
 		String current_Date = null;

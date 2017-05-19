@@ -32,7 +32,7 @@ public class Log  {
 	public  Log(String logName) throws IOException{
 		
 		System.out.println("Logger created for: "+logName);
-		FileAppender appeander = null;
+		FileAppender appeander=null ;
 		ConsoleAppender console=null;
 		
 		Log = Logger.getLogger(logName);
@@ -61,6 +61,10 @@ public class Log  {
 	
 	}
 
+	public void destoryLogger() {
+		Log.removeAllAppenders();
+	}
+	
 	
 	  public void startTestCase(String sTestCaseName){
 

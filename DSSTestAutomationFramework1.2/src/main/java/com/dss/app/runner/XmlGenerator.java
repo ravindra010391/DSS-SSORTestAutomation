@@ -11,6 +11,7 @@ import java.util.Map;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.testng.xml.XmlClass;
+import org.testng.xml.XmlPackage;
 import org.testng.xml.XmlSuite;
 import org.testng.xml.XmlSuite.ParallelMode;
 import org.testng.xml.XmlTest;
@@ -99,10 +100,10 @@ public class XmlGenerator {
 
 
 					List<XmlClass> testclasses = new ArrayList<XmlClass>();
-					testclasses.add(new XmlClass(
-							"com.dss.app.test.isologin.TestExecutor"));
-					xmlTest[j].setClasses(testclasses);
-
+					List<XmlPackage> testPackage = new ArrayList<XmlPackage>();
+					testPackage.add(new XmlPackage("com.dss.app.test.login"));
+					xmlTest[j].setPackages(testPackage);
+					
 				}
 
 			}

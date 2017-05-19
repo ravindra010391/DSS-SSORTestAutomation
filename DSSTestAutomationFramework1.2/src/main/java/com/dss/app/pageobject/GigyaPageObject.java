@@ -1,5 +1,6 @@
 package com.dss.app.pageobject;
 
+import java.io.IOException;
 import java.util.Set;
 
 import org.openqa.selenium.By;
@@ -35,16 +36,16 @@ public class GigyaPageObject {
 	
 	
 	//Gmail Gigya locators
-	@FindBy(id = "Email")
+	@FindBy(id = "identifierId")
 	private WebElement textbox_Gmail_EmailID;
 	
-	@FindBy(id = "next")
+	@FindBy(xpath = "//*[@id='identifierNext']/content/span")
 	private WebElement btn_Gmail_Next;
 	
-	@FindBy(id = "Passwd")
+	@FindBy(name = "password")
 	private WebElement textbox_Gmail_Password;
 	
-	@FindBy(id = "signIn")
+	@FindBy(className = "CwaK9")
 	private WebElement btn_Gmail_SignIn;	
 	
 	
@@ -94,7 +95,8 @@ public class GigyaPageObject {
 	
 	
 	//--------------public methods------------------
-	public HomePageObject doFacebookLogin(String username, String password) throws InterruptedException{
+	//Need to update the doLogin code as per Home Page 
+	public HomePageObject doFacebookLogin(String username, String password) {
 		String parentWindowHandle = CoreUtility.switchToWindow(driver, "facebook");
 		enterFacebookUsername(username);
 		enterFacebookPassword(password);
@@ -150,18 +152,46 @@ public class GigyaPageObject {
 		enterYahooPassword(password);
 		clickOnYahooSingInButtonAfterEnteringPassword();
 		clickOnYahooAgreeButtonAfterEnteringCredentials();
-		Log.info("Yahoo Login Successful ");
 		waitForTheLoginAndswitchToParentWindow(driver, parentWindowHandle);
+		Log.info("Yahoo Login Successful");
 		
-		return new HomePageObject(driver, Log);
+		return new HomePageObject(driver, Log);		
+	}
+	
+
+	public ProfilePageObject doFacabookLoginProfilePage(String username, String password)  {
+		doFacebookLogin(username, password);
+		return new ProfilePageObject(driver, Log);
 		
 	}
+	public ProfilePageObject doTwitterLoginProfilePage(String username, String password) throws IOException, InterruptedException{
+		doTwitterLogin(username, password);
+		return new ProfilePageObject(driver, Log);
+		
+	}
+	public ProfilePageObject doYahooLoginProfilePage(String username, String password) throws IOException, InterruptedException{
+		doYahooLogin(username, password);
+		return new ProfilePageObject(driver, Log);
+		
+	}
+	public ProfilePageObject doGmailLoginProfilePage(String username, String password) throws IOException, InterruptedException{
+		doGmailLogin(username, password);
+		return new ProfilePageObject(driver, Log);
+		
+	}
+	public ProfilePageObject doAOLLoginProfilePage(String username, String password) throws IOException, InterruptedException{
+		doAOLLogin(username, password);
+		return new ProfilePageObject(driver, Log);
+		
+	}
+	
+	
 	
 	//---------------private methods----------------
 	
 	//Will wait if it takes time to login after entering valid credentials
-	private void waitForTheLoginAndswitchToParentWindow(WebDriver driver, String parentWindowHandle) throws InterruptedException{
-	
+	private void waitForTheLoginAndswitchToParentWindow(WebDriver driver, String parentWindowHandle){
+	try{
 		int attempts = 1;		
 		while(attempts <3){
 			if(driver.getWindowHandles().size() == 1){
@@ -173,6 +203,7 @@ public class GigyaPageObject {
 				attempts++;
 			}
 		}
+	}catch(Exception e){System.out.println("Exception occured While switching to the Parent Window");}
 	}
 	
 	private void enterFacebookUsername(String username){

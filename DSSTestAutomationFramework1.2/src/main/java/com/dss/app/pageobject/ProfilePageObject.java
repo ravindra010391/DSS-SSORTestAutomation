@@ -1,6 +1,7 @@
 package com.dss.app.pageobject;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -19,8 +20,9 @@ public class ProfilePageObject {
 
 	private WebDriver driver;
 	private Log Log;
+	
 
-	public ProfilePageObject(WebDriver driver, Log Log) throws IOException {
+	public ProfilePageObject(WebDriver driver, Log Log)  {
 		this.driver = driver;
 		this.Log = Log;
 		PageFactory.initElements(driver, this);
@@ -55,7 +57,7 @@ public class ProfilePageObject {
 	@FindBy(xpath = "//*[@id='content']/div/div[2]/div/div/div[2]/div[5]")
 	private WebElement label_PasswordSuccessfulUpdateMessage;
 
-	// Name tab locators
+	// Name tab locator
 	@FindBy(xpath = "//*[@id='content']/div/div[2]/div/div/div[4]/button")
 	private WebElement btn_EditName;
 
@@ -64,13 +66,13 @@ public class ProfilePageObject {
 
 	@FindBy(name = "lastName")
 	private WebElement textbox_LastName;
-
+					
 	@FindBy(xpath = "//*[@id='content']/div/div[2]/div/div/div[4]/div[3]/form/button")
 	private WebElement btn_SaveName;
 
 	@FindBy(xpath = "//*[@id='content']/div/div[2]/div/div/div[4]/div[3]/form/a")
 	private WebElement btn_CancelName;
-
+					
 	@FindBy(xpath = "//*[@id='content']/div/div[2]/div/div/div[4]/div[5]")
 	private WebElement label_NameUpdateSuccessMessage;
 
@@ -81,7 +83,7 @@ public class ProfilePageObject {
 	private WebElement label_CurrentFirstAndLastName;
 
 	// Username tab locators
-	@FindBy(xpath = "//*[@id='content']/div/div[2]/div/div/div[3]/button")
+	@FindBy(xpath = ".//*[@id='content']/div/div[2]/div/div/div[3]/button")
 	private WebElement btn_UsernameEdit;
 
 	@FindBy(name = "userName")
@@ -92,14 +94,50 @@ public class ProfilePageObject {
 
 	@FindBy(xpath = "//*[@id='content']/div/div[2]/div/div/div[3]/div[3]/form/a")
 	private WebElement btn_CancelUsername;
-
+					
 	@FindBy(xpath = "//*[@id='content']/div/div[2]/div/div/div[3]/div[2]")
 	private WebElement label_CurrentUsername;
 
 	@FindBy(xpath = ".//*[@id='content']/div/div[2]/div/div/div[3]/div[@data-reg-role='done']")
 	private WebElement label_UsernameUpdateSuccessMessage;
 
+	// Preferred Email Tab Locators
+	@FindBy(xpath=".//*[@id='content']/div/div[2]/div/div/div[1]/div[4]/form/label")
+	private List<WebElement> radioBtn_PreferredEmailList;	
 	
+	@FindBy(xpath="//*[@id='content']/div/div[2]/div/div/div[1]/button")
+	private WebElement btn_PreferredEmail_Edit;
+	
+	@FindBy(xpath = "//*[@id='content']/div/div[2]/div/div/div[1]/div[4]/form/a[2]")
+	private  WebElement link_PreferredEmail_Cancel;
+	
+	@FindBy(xpath="//*[@id='content']/div/div[2]/div/div/div[1]/div[3]/form/button")
+	private WebElement btn_PreferredEmail_Save;
+	
+	@FindBy(xpath="//*[@id='content']/div/div[2]/div/div/div[1]/div[4]/form/div")
+	private List<WebElement> label_PreferedID_ConnectionText;
+	
+	// Linking Tab Locators
+	@FindBy(xpath = ".//*[@id='content']/div/div[2]/div/div/div[5]/div[2]/div[1]/a")
+	private  WebElement btn_ProfileFacebook;
+	
+	@FindBy(xpath = ".//*[@id='content']/div/div[2]/div/div/div[5]/div[2]/div[3]/a")
+	private  WebElement btn_ProfileTwitter;
+	
+	@FindBy(xpath = ".//*[@id='content']/div/div[2]/div/div/div[5]/div[2]/div[5]/a")
+	private  WebElement btn_ProfileYahoo;
+	
+	@FindBy(xpath = ".//*[@id='content']/div/div[2]/div/div/div[5]/div[2]/div[4]/a")
+	private  WebElement btn_ProfileAol;
+	
+	@FindBy(xpath = ".//*[@id='content']/div/div[2]/div/div/div[5]/div[2]/div[2]/a")
+	private  WebElement btn_ProfileGmail;
+	
+	@FindBy(xpath = "//*[@id='content']/div/div[2]/div/div/div[5]/div[3]/form/button")
+	private  WebElement btn_ProfileLinking_Disconnet;
+	
+	@FindBy(xpath = "//*[@id='content']/div/div[2]/div/div/div[5]/div[@class='reg-current']")
+	private  WebElement div_Profile_Linking;
 	
 	// --------------Public Methods
 	// ---------------------------------------------
@@ -149,16 +187,17 @@ public class ProfilePageObject {
 		return nameSuccessfulUpadteMessage;
 	}
 
+
 	public String editUsername(String username) {
 		Log.info("**Profile Page - Edit Username**");
 		String usernameSuccessfulUpadteMessage = null;
-	
+		String currentUsername = getCurrentUsername();
 		clickOnUsernameEditButton();
-		enterUserName(username);
+		enterUserName(currentUsername + username +"new");
 		usernameSuccessfulUpadteMessage = clickOnSaveUsernameButton();
 
 		// Verifing the Username after Update
-		String currentUsername = getCurrentUsername();
+		currentUsername = getCurrentUsername();
 		if (currentUsername.equalsIgnoreCase(currentUsername))
 			Log.info("Updated Username to: " + currentUsername);
 		else
@@ -172,10 +211,204 @@ public class ProfilePageObject {
 		} else {
 			Log.info("Name is Present for Current User so Greeting Text does not contain the Username");
 		}
-
 		return usernameSuccessfulUpadteMessage;
 	}
 
+	
+	public GigyaPageObject clickOnProfileFacebookGigya(){
+		CoreUtility.clickOnElement(btn_ProfileFacebook);
+		try{Thread.sleep(3000);
+		}catch(Exception e){}
+		return new GigyaPageObject(driver, Log);
+	}
+	
+	public GigyaPageObject clickOnProfileTwitterGigya() throws InterruptedException{
+		CoreUtility.clickOnElement(btn_ProfileTwitter);
+		Thread.sleep(3000);
+		return new GigyaPageObject(driver, Log);
+	}
+	
+	public GigyaPageObject clickOnProfileAOLGigya() throws InterruptedException{
+		CoreUtility.clickOnElement(btn_ProfileAol);
+		Thread.sleep(3000);
+		return new GigyaPageObject(driver, Log);
+	}
+	
+	public GigyaPageObject clickOnProfileYahooGigya() throws InterruptedException{
+		CoreUtility.clickOnElement(btn_ProfileYahoo);
+		Thread.sleep(3000);
+		return new GigyaPageObject(driver, Log);
+	}
+	
+	public GigyaPageObject clickOnProfileGmailGigya() throws InterruptedException{
+		CoreUtility.clickOnElement(btn_ProfileGmail);
+		Thread.sleep(3000);
+		return new GigyaPageObject(driver, Log);
+	}
+
+	public boolean checkProfileLinkingSuccess(String SSO_EmailId, String SSOLinked) {
+		boolean linkingStatus = false;
+		CoreUtility.waitForElementPresent(div_Profile_Linking, driver);
+		switch (SSOLinked.toLowerCase()) {
+		case "facebook":
+			if (btn_ProfileFacebook.getAttribute("data-reg-linked").equalsIgnoreCase("true")) {
+				if (isEmailListedAtPreferredEmailList(SSO_EmailId, SSOLinked)) {
+					linkingStatus = true;
+				}
+			}
+			break;
+		case "twitter":
+			if (btn_ProfileTwitter.getAttribute("data-reg-linked").equalsIgnoreCase("true")) {
+				if (isEmailListedAtPreferredEmailList(SSO_EmailId, SSOLinked)) {
+					linkingStatus = true;
+				}
+			}
+			break;
+		case "aol":
+			if (btn_ProfileAol.getAttribute("data-reg-linked").equalsIgnoreCase("true")) {
+				if (isEmailListedAtPreferredEmailList(SSO_EmailId, SSOLinked)) {
+					linkingStatus = true;
+				}
+			}
+			break;
+		case "yahoo":
+			if (btn_ProfileYahoo.getAttribute("data-reg-linked").equalsIgnoreCase("true")) {
+				if (isEmailListedAtPreferredEmailList(SSO_EmailId, SSOLinked)) {
+					linkingStatus = true;
+				}
+			}
+			break;
+		case "gmail":
+			SSOLinked = "google";
+			if (btn_ProfileGmail.getAttribute("data-reg-linked").equalsIgnoreCase("true")) {
+				if (isEmailListedAtPreferredEmailList(SSO_EmailId, SSOLinked)) {
+					linkingStatus = true;
+				}
+			}
+			break;
+		default:
+			System.out.println("Error at Profile linking");
+
+		}
+
+		return linkingStatus;
+
+	}
+	
+	
+	public boolean disconnectProfileLinkedSSO(String SSOLinked){
+		boolean linkingStatus = false;
+
+		CoreUtility.waitForElementPresent(div_Profile_Linking, driver);
+		switch (SSOLinked.toLowerCase()) {
+		case "facebook":
+			if (btn_ProfileFacebook.getAttribute("data-reg-linked").equalsIgnoreCase("true")){
+				CoreUtility.clickOnElement(btn_ProfileFacebook);
+				CoreUtility.waitForElementPresent(btn_ProfileLinking_Disconnet, driver);
+				CoreUtility.clickOnElement(btn_ProfileLinking_Disconnet);
+				
+				try{
+					Thread.sleep(3000);
+					if(!btn_ProfileFacebook.getAttribute("data-reg-linked").isEmpty()){
+						Log.error("Disconnecting error");
+				}
+				}
+					catch(Exception e){
+						Log.info("Facebook - Disconnected sucessfully");
+				linkingStatus=true;
+					}
+				
+			}
+			
+			break;
+		case "twitter":
+			if (btn_ProfileTwitter.getAttribute("data-reg-linked").equalsIgnoreCase("true")){
+				CoreUtility.clickOnElement(btn_ProfileTwitter);
+				CoreUtility.waitForElementPresent(btn_ProfileLinking_Disconnet, driver);
+				CoreUtility.clickOnElement(btn_ProfileLinking_Disconnet);
+				
+				try{
+					Thread.sleep(3000);
+					if(!btn_ProfileTwitter.getAttribute("data-reg-linked").isEmpty()){
+						Log.error("Disconnecting error");
+				}
+				}
+					catch(Exception e){
+						Log.info("Twitter - Disconnected sucessfully");
+				linkingStatus=true;
+					}
+				
+			}
+			
+			break;
+		case "aol":
+			if (btn_ProfileAol.getAttribute("data-reg-linked").equalsIgnoreCase("true")){
+				CoreUtility.clickOnElement(btn_ProfileAol);
+				CoreUtility.waitForElementPresent(btn_ProfileLinking_Disconnet, driver);
+				CoreUtility.clickOnElement(btn_ProfileLinking_Disconnet);
+				
+				try{
+					Thread.sleep(3000);
+					if(!btn_ProfileAol.getAttribute("data-reg-linked").isEmpty()){
+						Log.error("Disconnecting error");
+				}
+				}
+					catch(Exception e){
+						Log.info("Aol - Disconnected sucessfully");
+				linkingStatus=true;
+					}
+				
+			}
+			
+			break;
+		case "yahoo":
+			if (btn_ProfileYahoo.getAttribute("data-reg-linked").equalsIgnoreCase("true")){
+				CoreUtility.clickOnElement(btn_ProfileYahoo);
+				CoreUtility.waitForElementPresent(btn_ProfileLinking_Disconnet, driver);
+				CoreUtility.clickOnElement(btn_ProfileLinking_Disconnet);
+				
+				try{
+					Thread.sleep(3000);
+					if(!btn_ProfileYahoo.getAttribute("data-reg-linked").isEmpty()){
+						Log.error("Error occured during Disconnecting SSO");
+				}
+				}
+					catch(Exception e){
+						Log.info("Yahoo - Disconnected sucessfully");
+				linkingStatus=true;
+					}
+				
+			}
+			
+			break;
+		case "gmail":
+			if (btn_ProfileGmail.getAttribute("data-reg-linked").equalsIgnoreCase("true")){
+				CoreUtility.clickOnElement(btn_ProfileGmail);
+				CoreUtility.waitForElementPresent(btn_ProfileLinking_Disconnet, driver);
+				CoreUtility.clickOnElement(btn_ProfileLinking_Disconnet);
+				
+				try{
+					Thread.sleep(3000);
+					if(!btn_ProfileGmail.getAttribute("data-reg-linked").isEmpty()){
+						Log.error("Disconnecting error");
+				}
+				}
+					catch(Exception e){
+						Log.info("Gmail - Disconnected sucessfully");
+						linkingStatus=true;
+					}
+				
+			}
+			
+			break;
+		default:
+			Log.error("Disconnecting error");
+
+		}
+
+		return linkingStatus;
+
+	}
 	// **********************Private Methods****************************
 	private String getPreferredEmail() {
 		CoreUtility.waitForElementPresent(preferredEmail, driver);
@@ -325,5 +558,26 @@ public class ProfilePageObject {
 		return label_CurrentUsername.getText();
 	}
 	
-	
+	private boolean isEmailListedAtPreferredEmailList(String emailID, String SSOLinked){
+		
+		int connectionLabelCount=0;
+		boolean isEmailIdPresent = false;
+		
+		CoreUtility.clickOnElement(btn_PreferredEmail_Edit);
+		 for(WebElement preferredID:radioBtn_PreferredEmailList ){ 
+			 if(preferredID.getText().equalsIgnoreCase(emailID)){
+				 if(label_PreferedID_ConnectionText.get(connectionLabelCount).getText().toLowerCase().contains(SSOLinked.toLowerCase())){
+					 
+					 isEmailIdPresent=true;
+					 break;
+				 	}
+			}
+		connectionLabelCount++; 
+		 }
+
+		CoreUtility.clickOnElement(link_PreferredEmail_Cancel);
+		return isEmailIdPresent;
+		
+	}
+		
 }

@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -17,7 +18,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.ITestContext;
 import org.testng.xml.XmlSuite;
 
 import com.dss.app.apputilities.GlobalValues;
@@ -140,6 +140,8 @@ public class CoreUtility {
         ArrayList<String> list = new ArrayList<String>();
         BufferedReader br = null;
         BufferedReader r = null;
+        RandomAccessFile oldFile=null;
+        
         try{
             br = new BufferedReader(new FileReader(GlobalValues.tempLogFilePath + File.separator + fromFile));
             
@@ -154,7 +156,9 @@ public class CoreUtility {
             e.printStackTrace();
      
         }finally{
-            br.close();
+        	  br.close();              
+              oldFile = new RandomAccessFile (GlobalValues.tempLogFilePath + File.separator + fromFile,"rw"); 
+              oldFile.setLength(0); 
                  
         }
 

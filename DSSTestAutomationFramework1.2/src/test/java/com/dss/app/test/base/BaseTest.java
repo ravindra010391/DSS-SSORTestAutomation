@@ -6,13 +6,16 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
@@ -28,7 +31,6 @@ import com.dss.app.pageobject.HomePageObject;
 import com.dss.app.pageobject.ProfilePageObject;
 import com.dss.app.reporter.ExtentTestManager;
 import com.dss.app.reporter.ExtentManager;
-import com.relevantcodes.extentreports.ExtentReports;
 import com.relevantcodes.extentreports.ExtentTest;
 import com.relevantcodes.extentreports.LogStatus;
 
@@ -46,15 +48,15 @@ public class BaseTest{
 	protected String jobID;
 	protected String url;
 	protected Map<String, ArrayList<String>> testCaseLevelSSOCredentials;
-	public static String currentSuiteName;	
+	public static String currentSuiteName;
 	
-
+	
 	@BeforeSuite(alwaysRun = true)
 	public void suiteSetUp(ITestContext context) throws IOException {
+		System.out.println("Before suite");
 		currentSuiteName = context.getCurrentXmlTest().getSuite().getName();
 		ExtentManager.getReporter(currentSuiteName);
 		AppUtility.initAllSSOStacks();
-		System.out.println("before suite");
 
 	}
 
@@ -62,38 +64,59 @@ public class BaseTest{
 	public void suiteTearDown() throws IOException {
 		System.out.println("After suite");
 		//CoreUtility.cleanAllTempLogFile();
-		ExtentManager.closeExtent();
-		
-		
+		ExtentManager.getReporter().close();
 		
 	}
 	
 	@Parameters({ "browser"})
 	@BeforeTest
 	public void testSetUp(String browser) throws IOException {
-
-		String logName = browser+Thread.currentThread().getId()+"log";
-		Log = new Log(logName);
+		System.out.println("Before TEst");
+		
 		SauceREST = new SauceREST();
 		
 	}
 	
+	@Parameters({"browser"})
+	@BeforeClass(alwaysRun = true)
+	public void classSetup(String browser) throws IOException{
+		System.out.println("Enter Inside class before");
+		String logName = browser+Thread.currentThread().getId()+"log";
+		Log= new Log(logName);
+		System.out.println("Log at before class"+Log);
+		System.out.println("Exit Inside class before");
+	}
 	
-
-	@AfterTest
-	public void testTearDown(ITestContext context) throws IOException {
+	
+	@AfterClass(alwaysRun =  true)
+	public void classTeardown(ITestContext context) throws IOException{
+		System.out.println("After Test");
         String fromFile = Log.Log.getName()+".log";
         String toFile =  "Log" + currentSuiteName +AppUtility.getCurrentDate()+".log";
                
         System.out.println("From file: "+fromFile);
         CoreUtility.copyDataFromTempLogFileToMainLogFile(fromFile,toFile);
 
+		System.out.println("Class After method start");
+		Log.destoryLogger();
+		Log=null;
+		System.out.println("Class After method end");
+	}
+	
+
+	@AfterTest
+	public void testTearDown() throws IOException {
+	
 		
 	}
 
 	@Parameters({ "browser", "platform", "url" })
 	@BeforeMethod(alwaysRun = true)
 	public void methodSetUp(String browser, String platform, String url, Method method, ITestContext testContext) throws IOException, InterruptedException {
+		
+		System.out.println("deleting test data ");
+		//AppUtility.deleteTestDataFromP2P("gurimay12@yahoo.in");
+		System.out.println("deleted");
 		this.url = url;
 		//driver = new Config().selectBrowserOnLocal(browser, platform);
 		driver = new Config(Log).selectBrowserOnSauceLab(browser, platform, method);
@@ -106,8 +129,7 @@ public class BaseTest{
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 		getURL(url);
 		
-		homepage = getHomePageObject();
-				
+		homepage = getHomePageObject();	
 		Log.startTestCase(method.getName());
 		Log.info("Test: "+testContext.getName());
 		Log.info("Browser: "+browser);
@@ -120,7 +142,7 @@ public class BaseTest{
 
 	@AfterMethod(alwaysRun = true)
 	public void methodTearDown(ITestResult result) throws IOException, InterruptedException {
-		
+		System.out.println("After Method");
 		String testStatus = "null";
 		if (result.getStatus() == ITestResult.FAILURE) {
 			testStatus = "Failed";
@@ -130,7 +152,7 @@ public class BaseTest{
             
         } else if (result.getStatus() == ITestResult.SKIP) {
         	testStatus = "Skipped";
-            ExtentTestManager.getTest().log(LogStatus.SKIP, "Test skipped ");
+            ExtentTestManager.getTest().log(LogStatus.SKIP, "Test skipped " + result.getThrowable());
             Log.error(result.getThrowable());
             
         } else  if (result.getStatus() == ITestResult.SUCCESS){
@@ -141,13 +163,12 @@ public class BaseTest{
 		String click_url = "<a target='_blank'"+ "href='https://saucelabs.com/beta/tests/"+ jobID +"/metadata#9'>Screenshot and Screencast of the Test</a>";
 		ExtentTestManager.getTest().log(LogStatus.INFO, click_url);
         
-        ExtentManager.getReporter().endTest(ExtentTestManager.getTest());  
-        System.out.println("before flush");
+        ExtentManager.getReporter().endTest(ExtentTestManager.getTest());        
         ExtentManager.getReporter().flush();
         Log.endTestCase(testStatus);    
-        System.out.println("After method fibnished");
 		driver.quit();
 		AppUtility.destoryTestCaseLevelSSOTestUsers(testCaseLevelSSOCredentials);	
+		
 	}
 
 
