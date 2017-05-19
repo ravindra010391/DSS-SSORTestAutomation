@@ -181,7 +181,7 @@ public class XmlGenerator {
 		XmlSuite parentSuite = new XmlSuite();
 		parentSuite.setName("TestNG");
 		parentSuite.setThreadCount(1);
-		parentSuite.addListener("com.dss.app.failedrerun.AnnotationTransformer");
+	//	parentSuite.addListener("com.dss.app.failedrerun.AnnotationTransformer");
 		parentSuite.setSuiteFiles(allRunTimeXML);
 	
 
