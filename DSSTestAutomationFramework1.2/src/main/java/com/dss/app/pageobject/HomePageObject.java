@@ -293,6 +293,7 @@ public class HomePageObject {
 
 	private HomePageObject clickOnUserIcon() {
 		CoreUtility.highlightElement(icon_User, driver);
+		CoreUtility.waitForElementPresent(icon_User, driver);
 		CoreUtility.clickOnElement(icon_User);
 		Log.info("Clicked on User Account menu");
 		return this;
@@ -300,6 +301,7 @@ public class HomePageObject {
 	
 	private HomePageObject clickOnLogoutLink() {
 		CoreUtility.highlightElement(link_SignOut, driver);
+		CoreUtility.waitForElementPresent(link_SignOut, driver);
 		CoreUtility.clickOnElement(link_SignOut);
 		Log.info("Clicked on sign Out link");
 		return this;

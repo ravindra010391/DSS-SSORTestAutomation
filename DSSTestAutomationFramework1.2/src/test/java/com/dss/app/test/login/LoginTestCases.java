@@ -36,6 +36,8 @@ public class LoginTestCases extends BaseTest {
 		isSuccess = profilepage.isExpectedUserLogged(emailId);
 		softAssert.assertTrue(isSuccess);
 		
+
+		
 		// Profile Page Checks
 		
 		//Edit Password
@@ -53,7 +55,7 @@ public class LoginTestCases extends BaseTest {
 		ExtentTestManager.getTest().log(LogStatus.INFO,"Edit Username on Profile Page");
 		String usernameUpdateMsg = profilepage.editUsername("NewUsername1111");
 		softAssert.assertEquals(usernameUpdateMsg, GlobalValues.USERNAME_SUCCESSFULLY_UPADATED_MSG);
-		
+	
 /*		// Linking Facebook Account Form Profile Page
 		ExtentTestManager.getTest().log(LogStatus.INFO,"Link Facebook Account from Profile Page And Verify FB User in Preferred Email");
 		gigyapage = profilepage.clickOnProfileFacebookGigya();
@@ -66,7 +68,11 @@ public class LoginTestCases extends BaseTest {
 		boolean isFacebookSSODisconnectedSuccess = profilepage.disconnectProfileLinkedSSO("Facebook");
 		softAssert.assertTrue(isFacebookSSODisconnectedSuccess);
 		
-*/		softAssert.assertAll();
+*/		ExtentTestManager.getTest().log(LogStatus.INFO,"Goto Home Page and Log Out the User");
+		driver.navigate().back();
+		homepage.doLogout();
+		
+		softAssert.assertAll();
 		
 
 	
@@ -142,7 +148,12 @@ public class LoginTestCases extends BaseTest {
 		isGmailSSODisconnectedSuccess = profilepage.disconnectProfileLinkedSSO("Gmail");
 		softAssert.assertTrue(isGmailSSODisconnectedSuccess);
 	
-*/		softAssert.assertAll();
+*/		
+		ExtentTestManager.getTest().log(LogStatus.INFO,"Goto Home Page and Log Out the User");
+		driver.navigate().back();
+		homepage.doLogout();
+		
+		softAssert.assertAll();
 	}
 	
 	

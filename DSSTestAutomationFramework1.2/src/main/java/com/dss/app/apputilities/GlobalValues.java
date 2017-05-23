@@ -13,8 +13,8 @@ public interface GlobalValues {
 	public static final String PHANTOMJS_DRIVER_PATH = baseDirectory+ "\\src\\test\\resources\\phantomjs.exe";
 	
 	//Sauce Lab config details
-	public static final String SAUCE_USERNAME = "ravindra.mandage4"; 
-	public static final String SAUCE_ACCESS_KEY = "4ef113c4-5c12-4f2f-a9da-0427c48c034b"; 
+	public static final String SAUCE_USERNAME = "ravindra.mandage5"; 
+	public static final String SAUCE_ACCESS_KEY = "e67be393-0aef-48d4-aa32-ed7bc36cf9d7"; 
 	public static final String SAUCE_URL = "http://" + SAUCE_USERNAME + ":" + SAUCE_ACCESS_KEY + "@ondemand.saucelabs.com:80/wd/hub";
 	public static final String SAUCE_MAC_VERSION = "macOS 10.12";
 	public static final String SAUCE_WINDOWS_VERSION = "windows 7";
